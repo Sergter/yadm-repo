@@ -1,0 +1,18 @@
+[credential]
+	credentialStore = gpg
+	azreposCredentialType = oauth
+	helper = 
+	helper = /usr/local/bin/git-credential-manager
+[user]
+	name = Sergey Terletskiy
+	email = seterlet@microsoft.com
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+[credential "azrepos:org/MicrosoftIT"]
+	azureAuthority = https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47
+	username = seterlet@microsoft.com
+[pull]
+	rebase = true
+[credential "https://github.com"]
+	provider = github
+	gitHubAuthModes = browser,device

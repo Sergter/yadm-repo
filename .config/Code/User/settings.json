@@ -1,0 +1,8 @@
+{
+    "chat.viewSessions.orientation": "stacked",
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.ignoreRebaseWarning": true,
+    "chat.agent.maxRequests": 500,
+    "git.blame.editorDecoration.enabled": true
+}
