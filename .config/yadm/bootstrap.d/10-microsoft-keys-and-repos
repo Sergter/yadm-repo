@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# --- Signing key ----------------------------------------------------------
+# Microsoft signs all of their .deb packages with this key. Without it apt
+# refuses to install signed packages from packages.microsoft.com.
+if [[ ! -f /usr/share/keyrings/microsoft.gpg ]]; then
+  curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor \
+    | sudo tee /usr/share/keyrings/microsoft.gpg >/dev/null
+  sudo chmod 644 /usr/share/keyrings/microsoft.gpg
+fi
+# Some older Microsoft tools still look in trusted.gpg.d - keep both copies.
+sudo curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
+  -o /etc/apt/trusted.gpg.d/microsoft.asc
+
+REL="24.04"
+CODENAME="noble"
+
+# --- Edge stable (single global repo, not per-distro) ---------------------
+echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" \
+  | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list >/dev/null
+
+# --- Microsoft "prod" feed: intune-portal, microsoft-identity-broker -----
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod ${CODENAME} main" \
+  | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${CODENAME}-prod.list >/dev/null
+
+# --- Insiders-fast channel (optional, useful for nightlies) ---------------
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod insiders-fast main" \
+  | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${CODENAME}-insiders-fast.list >/dev/null
+
+# --- VS Code --------------------------------------------------------------
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
+  | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+
+# Single index refresh covers all repos added above.
+sudo apt update

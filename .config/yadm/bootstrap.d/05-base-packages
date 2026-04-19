@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+sudo apt update
+sudo apt install -y \
+  curl gpg ca-certificates apt-transport-https \
+  git libsecret-1-0 libsecret-tools \
+  pcscd yubikey-manager opensc libnss3-tools openssl

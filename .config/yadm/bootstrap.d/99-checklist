@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+cat <<'EOF'
+
+============================================================
+Manual steps still required (cannot be automated):
+  1. Plug YubiKey, register FIDO2 at https://aka.ms/fido2
+     and ensure passkey is enrolled in
+     https://mysignins.microsoft.com/security-info
+  2. Run: /usr/bin/intune-portal  -> sign in, enroll device
+  3. Azure VPN: import https://aka.ms/AzVPN-Temp into the
+     Microsoft Azure VPN Client GUI.
+  4. Brave: install Linux Entra SSO extension
+     https://chromewebstore.google.com/detail/linux-entra-sso/jlnfnnolkbjieggibinobhkjdfbpcohn
+  5. Clone work repos under ~/repos (see git.md).
+============================================================
+EOF

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+mkdir -p "$HOME/.pki/nssdb"
+chmod 700 "$HOME/.pki" "$HOME/.pki/nssdb"   # NSS refuses world-readable DBs.
+
+# Create the empty sqlite NSS DB on first run.
+if [[ ! -f "$HOME/.pki/nssdb/cert9.db" ]]; then
+  modutil -force -create -dbdir "sql:$HOME/.pki/nssdb"
+fi
+
+LIB=/usr/lib/x86_64-linux-gnu/pkcs11/opensc-pkcs11.so
+# Only add the module if it's not already there - modutil errors otherwise.
+if ! modutil -dbdir "sql:$HOME/.pki/nssdb" -list 2>/dev/null | grep -q 'SC Module'; then
+  modutil -force -dbdir "sql:$HOME/.pki/nssdb" -add 'SC Module' -libfile "$LIB"
+fi
+
+# pcscd is the userspace daemon that talks to USB smartcards/YubiKeys.
+sudo systemctl enable --now pcscd.service

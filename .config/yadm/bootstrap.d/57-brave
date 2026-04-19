@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if ! command -v brave-browser >/dev/null; then
+  curl -fsS https://dl.brave.com/install.sh | sh
+fi

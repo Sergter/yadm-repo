@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Skip unless explicitly opted-in; switching mirrors is a personal preference.
+[[ "${USE_FAST_MIRROR:-0}" == "1" ]] || exit 0
+
+# Replace both the main archive and the security archive with the Princeton mirror.
+sudo sed -i 's|http://us.archive.ubuntu.com/ubuntu/|http://mirror.math.princeton.edu/pub/ubuntu/|' /etc/apt/sources.list.d/ubuntu.sources
+sudo sed -i 's|http://security.ubuntu.com/ubuntu/|http://mirror.math.princeton.edu/pub/ubuntu/|' /etc/apt/sources.list.d/ubuntu.sources
+
+# Refresh the index so later steps see the new mirror.
+sudo apt update
