@@ -6,10 +6,6 @@
 !.config/yadm
 !.config/yadm/**/*
 
-!.config/autostart
-!.config/autostart/*
-.config/autostart/cpe_fbz_notify.desktop
-
 !.config/cosmic
 !.config/cosmic/**/*
 .config/cosmic/com.system76.CosmicSettings/v1/active-page
@@ -18,10 +14,6 @@
 .config/cosmic/com.system76.CosmicIdle/v1/screen_off_time
 
 !.config/systemd
-!.config/systemd/**/*
-.config/systemd/user/graphical-session.target.wants/fmenu.service
 
 !Documents
 !Documents/*.md
-!Documents/scripts
-!Documents/scripts/**/*
