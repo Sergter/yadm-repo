@@ -28,9 +28,5 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packa
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod insiders-fast main" \
   | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${CODENAME}-insiders-fast.list >/dev/null
 
-# --- VS Code --------------------------------------------------------------
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
-  | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
-
 # Single index refresh covers all repos added above.
 sudo apt update

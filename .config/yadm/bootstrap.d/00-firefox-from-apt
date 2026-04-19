@@ -2,7 +2,7 @@
 set -euo pipefail
 sudo apt update
 sudo apt install -y wget gpg ca-certificates
-sudo install -d -m 0755 /etc/apt/keyrings
+sudo install -d -m 0755 /etc/apt/keyrings /usr/share/keyrings
 
 if [[ ! -f /etc/apt/keyrings/packages.mozilla.org.asc ]]; then
   wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- \
@@ -18,10 +18,22 @@ Pin: origin packages.mozilla.org
 Pin-Priority: 1000
 EOF
 
+if [[ ! -f /usr/share/keyrings/microsoft.gpg ]]; then
+  wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
+    | gpg --dearmor \
+    | sudo tee /usr/share/keyrings/microsoft.gpg >/dev/null
+  sudo chmod 0644 /usr/share/keyrings/microsoft.gpg
+fi
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
+  | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+
 # Purge wipes the snap's profile too - migrate it first if you need local state.
 if snap list firefox >/dev/null 2>&1; then
   sudo snap remove --purge firefox
 fi
 
 sudo apt update
-sudo apt install -y firefox
+# Mozilla's package version sorts lower than Ubuntu's transitional package,
+# so the first switch away from the Ubuntu package is a downgrade.
+sudo apt install -y --allow-downgrades firefox code

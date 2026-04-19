@@ -4,5 +4,4 @@ sudo apt install -y \
   microsoft-edge-stable \
   microsoft-identity-broker \
   intune-portal \
-  microsoft-azurevpnclient \
-  code
+  microsoft-azurevpnclient
