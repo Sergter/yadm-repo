@@ -12,5 +12,7 @@ nvm alias default 'lts/*'
 
 # Azure Artifacts npm credential provider - transparent OAuth for internal
 # npm feeds. Don't fail the whole bootstrap if the registry is unreachable.
-npm install --global @microsoft/artifacts-npm-credprovider \
-  --registry https://pkgs.dev.azure.com/artifacts-public/23934c1b-a3b5-4b70-9dd3-d1bef4cc72a0/_packaging/AzureArtifacts/npm/registry/ || true
+if ! npm list --global @microsoft/artifacts-npm-credprovider --depth=0 >/dev/null 2>&1; then
+  npm install --global @microsoft/artifacts-npm-credprovider \
+    --registry https://pkgs.dev.azure.com/artifacts-public/23934c1b-a3b5-4b70-9dd3-d1bef4cc72a0/_packaging/AzureArtifacts/npm/registry/ || true
+fi

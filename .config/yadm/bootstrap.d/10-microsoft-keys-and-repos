@@ -10,11 +10,15 @@ if [[ ! -f /usr/share/keyrings/microsoft.gpg ]]; then
   sudo chmod 644 /usr/share/keyrings/microsoft.gpg
 fi
 # Some older Microsoft tools still look in trusted.gpg.d - keep both copies.
-sudo curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
-  -o /etc/apt/trusted.gpg.d/microsoft.asc
+if [[ ! -f /etc/apt/trusted.gpg.d/microsoft.asc ]]; then
+  sudo curl -sSL https://packages.microsoft.com/keys/microsoft.asc \
+    -o /etc/apt/trusted.gpg.d/microsoft.asc
+fi
 
 REL="24.04"
 CODENAME="noble"
+AZUREVPN_REL="22.04"
+AZUREVPN_CODENAME="jammy"
 
 # --- Edge stable (single global repo, not per-distro) ---------------------
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" \
@@ -23,6 +27,20 @@ echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" \
 # --- Microsoft "prod" feed: intune-portal, microsoft-identity-broker -----
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod ${CODENAME} main" \
   | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${CODENAME}-prod.list >/dev/null
+
+# --- Azure VPN client: only published in the jammy feed for now -----------
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${AZUREVPN_REL}/prod ${AZUREVPN_CODENAME} main" \
+  | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${AZUREVPN_CODENAME}-prod.list >/dev/null
+
+cat <<'EOF' | sudo tee /etc/apt/preferences.d/microsoft-azurevpnclient >/dev/null
+Package: *
+Pin: release n=jammy
+Pin-Priority: 100
+
+Package: microsoft-azurevpnclient
+Pin: release n=jammy
+Pin-Priority: 1001
+EOF
 
 # --- Insiders-fast channel (optional, useful for nightlies) ---------------
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod insiders-fast main" \

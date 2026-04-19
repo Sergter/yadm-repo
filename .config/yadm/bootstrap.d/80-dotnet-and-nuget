@@ -3,4 +3,6 @@ set -euo pipefail
 sudo apt install -y dotnet-sdk-10.0
 # Installs ~/.nuget/plugins/netcore/CredentialProvider.Microsoft and wires it
 # into nuget so `dotnet restore` can OAuth against ADO feeds.
-bash -c "$(curl -fsSL https://aka.ms/install-artifacts-credprovider.sh)"
+if [[ ! -d "$HOME/.nuget/plugins/netcore/CredentialProvider.Microsoft" ]]; then
+	bash -c "$(curl -fsSL https://aka.ms/install-artifacts-credprovider.sh)"
+fi
