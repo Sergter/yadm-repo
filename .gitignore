@@ -3,6 +3,9 @@
 !AGENTS.md
 !.config
 
+!.config/yadm
+!.config/yadm/**/*
+
 !.config/autostart
 !.config/autostart/*
 .config/autostart/cpe_fbz_notify.desktop

@@ -6,6 +6,8 @@ Manual steps still required (cannot be automated):
   1. Plug YubiKey, register FIDO2 at https://aka.ms/fido2
      and ensure passkey is enrolled in
      https://mysignins.microsoft.com/security-info
+     GDM smartcard login is disabled by bootstrap so the key does not block
+     password login at boot.
   2. Run: /usr/bin/intune-portal  -> sign in, enroll device
   3. Azure VPN: import https://aka.ms/AzVPN-Temp into the
      Microsoft Azure VPN Client GUI.
