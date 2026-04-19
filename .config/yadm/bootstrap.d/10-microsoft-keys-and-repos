@@ -20,10 +20,6 @@ CODENAME="noble"
 AZUREVPN_REL="22.04"
 AZUREVPN_CODENAME="jammy"
 
-# --- Edge stable (single global repo, not per-distro) ---------------------
-echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" \
-  | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list >/dev/null
-
 # --- Microsoft "prod" feed: intune-portal, microsoft-identity-broker -----
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/ubuntu/${REL}/prod ${CODENAME} main" \
   | sudo tee /etc/apt/sources.list.d/microsoft-ubuntu-${CODENAME}-prod.list >/dev/null
