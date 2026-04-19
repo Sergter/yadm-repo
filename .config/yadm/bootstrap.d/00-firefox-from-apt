@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+# VS Code may already ship a deb822 source file. Drop the older .list form
+# before refreshing apt metadata so reruns stay warning-free.
+sudo rm -f /etc/apt/sources.list.d/vscode.list
+
 sudo apt update
 sudo apt install -y wget gpg ca-certificates
 sudo install -d -m 0755 /etc/apt/keyrings /usr/share/keyrings
@@ -25,8 +30,15 @@ if [[ ! -f /usr/share/keyrings/microsoft.gpg ]]; then
   sudo chmod 0644 /usr/share/keyrings/microsoft.gpg
 fi
 
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
-  | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+ARCH="$(dpkg --print-architecture)"
+cat <<EOF | sudo tee /etc/apt/sources.list.d/vscode.sources >/dev/null
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: ${ARCH}
+Signed-By: /usr/share/keyrings/microsoft.gpg
+EOF
 
 # Purge wipes the snap's profile too - migrate it first if you need local state.
 if snap list firefox >/dev/null 2>&1; then

@@ -1,22 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-# Identity - sets the global git author for all repos on this machine.
-git config --global user.name  "Sergey Terletskiy"
-git config --global user.email "seterlet@microsoft.com"
-
-# Use Git Credential Manager; store credentials in a gpg-encrypted file so
-# they survive across sessions without exposing them on disk in plaintext.
-git config --global credential.helper manager
-git config --global credential.credentialStore gpg
-
-# Azure DevOps quirks: include the org path when matching credentials so each
-# org gets its own token, and use OAuth (device code) instead of basic auth.
-git config --global credential.https://dev.azure.com.useHttpPath true
-git config --global credential.azreposCredentialType oauth
-
-# Install GCM if it's not already present, then run its self-configure to
-# wire it into the gitconfig.
-if ! command -v git-credential-manager >/dev/null; then
-  curl -L https://aka.ms/gcm/linux-install-source.sh | sh
-  git-credential-manager configure
+# Git identity and GCM settings are tracked in the yadm-managed ~/.gitconfig.
+# Bootstrap only needs to ensure the GCM binary is present.
+if [[ ! -x /usr/local/bin/git-credential-manager ]]; then
+  curl -fsSL https://aka.ms/gcm/linux-install-source.sh | sh
 fi
