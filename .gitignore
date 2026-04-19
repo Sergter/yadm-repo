@@ -18,5 +18,6 @@
 .config/systemd/user/graphical-session.target.wants/fmenu.service
 
 !Documents
+!Documents/*.md
 !Documents/scripts
 !Documents/scripts/**/*
