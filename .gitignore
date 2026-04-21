@@ -16,4 +16,4 @@
 !.config/systemd
 
 !Documents
-!Documents/*.md
+!Documents/*

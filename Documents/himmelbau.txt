@@ -1,0 +1,113 @@
+Intune? More like OUTtune. How to switch to the Himmeblau auth stack and finally purge Edge from all your systems
+WARNING: this is unsupported, unofficial, unendorsed, will make your computer illegal, brick your cat and gain you a frowny face at your next Connect. Worse, it will also make Justin sad. Proceed at your own risk.
+ 
+Himmelblau is a fully open source stack that entirely replaces intune, edge and the identity broker. It is developed in the open on Github. This means when there are issues you can just click fork, clone, fix them, and send a PR, rather than having to pray the right PM hears your pleas and schedules a work item for the next semester (that will get inevitably punted). Strange stuff this "open source", wonder if it will ever become popular https://github.com/himmelblau-idm/himmelblau
+ 
+It is also available and supported on x86_64 and arm64, and on Fedora, Debian, Ubuntu, SUSE, RHEL, Rocky, Oracle Linux, Amazon Linux, NIX, Gentoo. As opposed to a single Ubuntu release from 6 years ago.
+
+WANTED: an Arch developer (btw) to contribute packaging and build scripts for it!
+ 
+It supports FIDO2 for auth, and none of that X.509 PIV malarky, which means it is fully PRMFA compliant. It also implements TPM2-sealed Hello.
+ 
+Ensure the Yubikey is enrolled as a passkey in https://mysignins.microsoft.com/security-info and check https://aka.ms/fido2 and https://aka.ms/fido2optin
+ 
+In the current nightly builds it has become stable and featureful enough to be used as a daily driver. I have been using it for a month now.
+
+WARNING: the stable releases are missing some critical bug fixes that break some of our flows, making it unusable, due to the cursed policy MSIT pushes on us. The 4.0 release will be the first one to be fully usable.
+ 
+Himmelblau can be used in two modes: the first one is where the Entra login becomes your local user too, so it is fully joined. I do not use this mode, so can't help with it, soz.
+
+The second mode is more similar to intune+identity-broker, where you have your own local user, and there's a mapping to an Entra id.
+ 
+It is split into several packages. It is possible to install only the main service, to test that configuration and enrollment work, without removing intune/identity-broker, and it is in fact recommended.
+
+The himmelblauu broker package conflicts with the intune stack, as it provides the same D-Bus interface for compatibility, but it can be installed later once one is ready to switch.
+ 
+First, if you haven't already, install the linux-entra-sso Chrome/Firefox extension. This works with intune/identity-broker too, and allows you to ditch edge:
+ 
+https://github.com/siemens/linux-entra-sso
+ 
+The local connector is packaged in debian/ubuntu, and the extension is available in the browser's extension store. Install from git on other distros, and get it packaged! Test that it works and you can access internal resources from chrome/firefox with the intune stack first. NOTE: if your browser is in a flatpak/snap, though luck - the connectors plugins do not work out of the box, and you have to figure out how to give the sandbox access to it. I have no idea.
+ 
+Then to install himmelblau, first add the repositories for your own distro of choice - select "COMMUNITY NIGHTLY" in this page:
+https://himmelblau-idm.org/downloads/
+ 
+Create the system config files first so that the services work out of the box when installing the packages:
+ 
+/etc/himmelblau/himmelblau.conf
+ 
+[global]
+domain = microsoft.com
+enable_experimental_mfa = true
+enable_experimental_passwordless_fido = true
+apply_policy = true
+enable_experimental_intune_custom_compliance = true
+hsm_type = tpm
+join_type = register
+user_map_file = /etc/himmelblau/user-map
+# These default options are required on Debian/Ubuntu. See `man himmelblau.conf`
+# for an explanation of these parameters. `home_attr` and `home_alias` need to
+# match, but don't necessarily need to be set to `CN`.
+local_groups = users
+home_attr = CN
+home_alias = CN
+use_etc_skel = true
+ 
+/etc/himmelblau/user-map
+ 
+<local user>:foo@microsoft.com
+ 
+In case you are NOT running Ubuntu, given the security policy is pushed down server side and it's identical to the intune one, you need to lie about the distro, given the silly and useless MSIT policy requires you to run Ubuntu to be compliant. Just lie in the same way as you did with Intune:
+ 
+/etc/systemd/system/himmelblaud-tasks.service.d/override.conf
+ 
+[Service]
+BindReadOnlyPaths=/var/lib/fake-os-release:/usr/lib/os-release
+/var/lib/fake-os-release
+ 
+PRETTY_NAME="Ubuntu 22.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.4 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+ 
+Then, install only the "himmelblau" and "pam-himmelblau" packages - do not pull in the broker package yet, as mentioned above. Do not install the nss package with the mapping mode at all. This provides two systemd units and a command line tool, and a pam module and config.
+ 
+VERY IMPORTANT: with the user mapping mode, you MUST update the default pam config (which is geared for the fully enrolled system) so that PAM is only used to unlock the broker TPM secret on login. On Debian/Ubuntu/SUSE run 'pam-auth-update' and DESELECT "Azure Entra Id authentication", and SELECT "Azure Entra Id unlock". On Fedora and derivatives this is different and I have no idea how authselect works (also don't really want to know), sorry you'll have to figure out how to do this.
+ 
+Once it's installed and configured and the services are running, you can enroll in Entra with the command:
+ 
+aad-tool auth-test --name foo
+(where foo is the same userid as foo@microsoft.com in /etc/himmelblau/user-map)
+ 
+This will first set up the local Hello PIN.
+
+IMPORTANT: use the same password as your local user for the PIN! This will enable auto-unlock on login. If you don't, you'll have to MANUALLY unlock with the PIN on every login, which is silly.
+
+This should also ask for your FIDO2 pin to auth to Entra, and then request to touch the key. It works fully from the command line, no browser required.
+ 
+It takes a couple of minutes to do the enrollment, if you check the journal in another terminal you'll see the services make progress.
+ 
+Once it's completed, if you go on https://portal.manage-beta.microsoft.com/devices you should see another entry appear, and it should say it's compliant. If so, success! The policies are the same as intune, as they are pushed down from the server - disk encryption, strong password, etc. If your laptop was compliant with intune, it will be compliant with himmelblau.
+ 
+Once you are happy everything is compliant, you can install himmelblau-broker, which will REMOVE intune/identity-broker, as it provides the user session service that linux-entra-sso talks to.
+
+At this point, resources should still be accessible on Firefox/Chrome - email, O365, Teams, etc.
+ 
+CAVEATS - there are still a few pending PRs that hopefully will get resolved soon, but nothing major:
+ 
+-sometimes the user broker times out (being investigated), it can be kicked with systemctl --user restart himmelblau-broker.service
+- some auth flows (like azurevpn) require (for some cursed reasons) to use a "localhost" redirect URI, support for which is being reviewed
+
+- some auth flows (like azurevpn) require a daily full auth. Support for this is available since 2026/03/25 nightly via a --force-reauth aad-tool parameter, which is not great UX but works. Integrated support in the broker for the interactive login is not available and being discussed.
+-note that the horrible azurevpn proprietary client does its own thing, doesn't talk to the broker, so it's not affected
+ 
+Please enjoy responsibly!
+ 
