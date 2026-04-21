@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sudo install -d -m 0755 /etc/himmelblau
+
+if [[ ! -f /etc/himmelblau/himmelblau.conf ]]; then
+  cat <<'EOF' | sudo tee /etc/himmelblau/himmelblau.conf >/dev/null
+[global]
+domain = microsoft.com
+enable_experimental_mfa = true
+enable_experimental_passwordless_fido = true
+apply_policy = true
+enable_experimental_intune_custom_compliance = true
+hsm_type = tpm
+join_type = register
+user_map_file = /etc/himmelblau/user-map
+local_groups = users
+home_attr = CN
+home_alias = CN
+use_etc_skel = true
+EOF
+fi
+
+if [[ ! -f /etc/himmelblau/user-map ]]; then
+  local_user="$(id -un)"
+  cat <<EOF | sudo tee /etc/himmelblau/user-map >/dev/null
+# Map the local account to your Entra ID UPN before running aad-tool.
+# Format: local_username:user@domain
+# Example:
+# ${local_user}:${local_user}@microsoft.com
+EOF
+  sudo chmod 600 /etc/himmelblau/user-map
+fi

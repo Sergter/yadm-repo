@@ -8,11 +8,19 @@ Manual steps still required (cannot be automated):
      https://mysignins.microsoft.com/security-info
      GDM smartcard login is disabled by bootstrap so the key does not block
      password login at boot.
-  2. Run: /usr/bin/intune-portal  -> sign in, enroll device
-  3. Azure VPN: import https://aka.ms/AzVPN-Temp into the
-     Microsoft Azure VPN Client GUI.
-  4. Brave: install Linux Entra SSO extension
+  2. Install the Linux Entra SSO browser extension in Firefox/Chrome/Brave:
      https://chromewebstore.google.com/detail/linux-entra-sso/jlnfnnolkbjieggibinobhkjdfbpcohn
-  5. Clone work repos under ~/repos (see git.md).
+  3. Edit /etc/himmelblau/user-map and replace the commented example with your
+     local-user -> user@microsoft.com mapping.
+  4. Run: sudo aad-tool auth-test --name <local-user>
+     Use the same password as your local account for the Hello PIN so login can
+     auto-unlock the TPM secret.
+  5. Confirm the device shows up as compliant in
+     https://portal.manage-beta.microsoft.com/devices
+  6. Optional: once enrollment works, install the user-session broker:
+     sudo apt install himmelblau-broker
+  7. Azure VPN: import https://aka.ms/AzVPN-Temp into the
+     Microsoft Azure VPN Client GUI.
+  8. Clone work repos under ~/repos (see git.md).
 ============================================================
 EOF

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sudo pam-auth-update --package --enable himmelblau-unseal --disable himmelblau
+sudo systemctl enable himmelblaud himmelblaud-tasks
+sudo systemctl restart himmelblaud himmelblaud-tasks

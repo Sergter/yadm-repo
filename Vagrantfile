@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "yadm-test-vagrant"
-    vb.gui = true
+    vb.gui = false
 
     vb.memory = 12478
     vb.cpus = 4
