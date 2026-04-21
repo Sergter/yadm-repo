@@ -1,8 +1,3 @@
-[credential]
-	credentialStore = gpg
-	azreposCredentialType = oauth
-	helper = 
-	helper = /usr/local/bin/git-credential-manager
 [user]
 	name = Sergey Terletskiy
 	email = seterlet@microsoft.com
@@ -11,3 +6,8 @@
 	username = seterlet@microsoft.com
 [pull]
 	rebase = true
+[credential]
+	helper = 
+	helper = /usr/local/bin/git-credential-manager
+[credential "https://dev.azure.com"]
+	useHttpPath = true
