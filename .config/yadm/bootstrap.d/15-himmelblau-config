@@ -29,10 +29,7 @@ fi
 if [[ ! -f /etc/himmelblau/user-map ]]; then
   local_user="$(id -un)"
   cat <<EOF | sudo tee /etc/himmelblau/user-map >/dev/null
-# Map the local account to your Entra ID UPN before running aad-tool.
-# Format: local_username:user@domain
-# Example:
-# ${local_user}:${local_user}@microsoft.com
+${local_user}:seterlet@microsoft.com
 EOF
   sudo chmod 600 /etc/himmelblau/user-map
 fi

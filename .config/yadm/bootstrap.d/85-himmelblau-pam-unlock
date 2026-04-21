@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-sudo DEBIAN_FRONTEND=noninteractive pam-auth-update --force --package \
-	--enable himmelblau-unseal --disable himmelblau
