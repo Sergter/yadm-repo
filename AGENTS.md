@@ -20,7 +20,7 @@
 
 - There is no application build or test suite. For bootstrap changes, validate with `bash -n` on touched scripts and review idempotency carefully.
 - Do not run `yadm bootstrap` unless the user explicitly wants system-level changes executed.
-- Treat edits as high impact: scripts install packages, add apt repositories, edit PAM configuration, and change global Git settings.
+- Treat edits as high impact: scripts install packages, add apt repositories, edit PAM configuration, and change global Git settings. 
 
 ## Key References
 
