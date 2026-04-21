@@ -8,6 +8,7 @@ agent: agent
 Use this prompt when the task is to change this repository's [Vagrantfile](../../Vagrantfile).
 
 Before editing, read [AGENTS.md](../../AGENTS.md) and the current [Vagrantfile](../../Vagrantfile).
+For any host-side repository inspection around the change, use `git`, not `yadm`; reserve `yadm` for commands run inside the guest VM.
 
 Follow this procedure:
 

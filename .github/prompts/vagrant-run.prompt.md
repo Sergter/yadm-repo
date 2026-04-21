@@ -8,6 +8,7 @@ agent: agent
 Use this prompt to run a one-off command inside the guest VM for this repository.
 
 Before acting, read [AGENTS.md](../../AGENTS.md) and inspect [Vagrantfile](../../Vagrantfile) if the request depends on VM configuration.
+Use `git` for any host-side repository inspection before or after the guest command. Use `yadm` only inside the VM.
 
 Follow this procedure:
 

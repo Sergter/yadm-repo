@@ -2,8 +2,8 @@
 
 ## Repo Scope
 
-- This repository is a yadm-managed Ubuntu dotfiles repo with the work tree rooted at `/home/seterlet`.
-- Prefer `yadm` over `git` for status, diff, add, and tracked-file queries.
+- This repository contains Ubuntu dotfiles and bootstrap assets that are managed by `yadm` inside the VM; the checked-out workspace itself should be treated as a normal `git` repository.
+- Use `git` rather than `yadm` for host-side status, diff, add, and tracked-file queries. Use `yadm` only inside the VM, where the work tree is rooted at `/home/seterlet`.
 - Limit exploration to tracked files. Do not infer behavior from other untracked files in the home directory.
 - The main automation lives in [.config/yadm/bootstrap](.config/yadm/bootstrap) and [.config/yadm/bootstrap.d](.config/yadm/bootstrap.d).
 
@@ -41,7 +41,7 @@
 ## Validation
 
 - There is no application build or test suite. For bootstrap changes, validate with `bash -n` on touched scripts and review idempotency carefully.
-- Do not run `yadm bootstrap` unless the user explicitly wants system-level changes executed.
+- Do not run `yadm bootstrap` unless the user explicitly wants system-level changes executed inside the VM.
 - Treat edits as high impact: scripts install packages, add apt repositories, edit PAM configuration, and change global Git settings. 
 
 ## Key References

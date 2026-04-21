@@ -3,6 +3,7 @@
         "vagrant": true,
         "set": true,
         "printf": true,
+        "true": true,
         "VBoxManage": true,
         "lsusb": true
     }

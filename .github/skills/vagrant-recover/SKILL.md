@@ -10,6 +10,7 @@ disable-model-invocation: true
 Use this skill when the VM has drifted into a bad state, when an experiment might need rollback, or when the user asks to inspect or restore snapshots.
 
 Start by reading [AGENTS.md](../../../AGENTS.md) and [Vagrantfile](../../../Vagrantfile).
+Use `git` for host-side repository inspection during recovery work. Use `yadm` only for commands executed inside the VM.
 
 ## Recovery Rules
 
