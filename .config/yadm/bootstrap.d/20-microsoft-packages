@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
-sudo apt install -y \
+
+export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_PRIORITY=critical
+export NEEDRESTART_MODE=a
+export UCF_FORCE_CONFOLD=1
+
+sudo -E apt-get install -y \
+  -o Dpkg::Options::=--force-confdef \
+  -o Dpkg::Options::=--force-confold \
   himmelblau \
   pam-himmelblau \
   microsoft-azurevpnclient
