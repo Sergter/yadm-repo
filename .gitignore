@@ -6,6 +6,12 @@
 !.config/yadm
 !.config/yadm/**/*
 
+!.config/zsh
+!.config/zsh/.zshrc
+!.config/zsh/bindings.zsh
+!.config/zsh/omp.toml
+!.config/zsh/third-party.zsh
+
 !.config/cosmic
 !.config/cosmic/**/*
 .config/cosmic/com.system76.CosmicSettings/v1/active-page

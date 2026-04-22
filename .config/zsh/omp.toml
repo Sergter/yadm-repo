@@ -1,0 +1,59 @@
+console_title_template = '{{ .Shell }} in {{ .Folder }}'
+version = 4
+final_space = true
+
+[secondary_prompt]
+foreground = 'magenta'
+
+[transient_prompt]
+template = '❯ '
+foreground = 'magenta'
+# foreground_templates = ['{{if gt .Code 0}}red{{end}}']
+
+[[blocks]]
+type = 'prompt'
+alignment = 'left'
+newline = true
+
+[[blocks.segments]]
+template = '{{ .Path }}'
+foreground = 'blue'
+type = 'path'
+style = 'plain'
+
+[blocks.segments.options]
+style = 'full'
+
+[[blocks.segments]]
+template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+type = 'git'
+style = 'plain'
+
+[blocks.segments.options]
+branch_icon = ''
+commit_icon = '@'
+fetch_status = true
+
+[[blocks]]
+type = 'rprompt'
+overflow = 'hidden'
+
+[[blocks.segments]]
+foreground = 'yellow'
+type = 'executiontime'
+style = 'plain'
+
+[[blocks]]
+type = 'prompt'
+alignment = 'left'
+newline = true
+
+[[blocks.segments]]
+type = "status"
+style = "plain"
+foreground = 'green'
+foreground_templates = [ "{{ if .Error }}red{{ end }}" ]
+template = "❯"
+
+[blocks.segments.options]
+always_enabled = true
