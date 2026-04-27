@@ -3,6 +3,7 @@
 ## Repo Scope
 
 - This repository is a yadm-managed Ubuntu dotfiles repo with the work tree rooted at `/home/seterlet`.
+- The interactive shell for terminal work is `zsh`; only the bootstrap scripts themselves should assume Bash.
 - Prefer `yadm` over `git` for status, diff, add, and tracked-file queries.
 - Limit exploration to tracked files. Do not infer behavior from other untracked files in the home directory.
 - The main automation lives in [.config/yadm/bootstrap](.config/yadm/bootstrap) and [.config/yadm/bootstrap.d](.config/yadm/bootstrap.d).
@@ -18,7 +19,7 @@
 
 ## Validation
 
-- There is no application build or test suite. For bootstrap changes, validate with `bash -n` on touched scripts and review idempotency carefully.
+- There is no application build or test suite. For bootstrap changes, validate the touched scripts with `bash -n`, but use `zsh` syntax and conventions for interactive terminal commands outside those scripts.
 - Do not run `yadm bootstrap` unless the user explicitly wants system-level changes executed.
 - Treat edits as high impact: scripts install packages, add apt repositories, edit PAM configuration, and change global Git settings. 
 
