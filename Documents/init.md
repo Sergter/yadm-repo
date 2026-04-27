@@ -23,4 +23,4 @@ yadm enter transcrypt -c aes-256-cbc -p '<your-strong-password>' -y
 yadm bootstrap
 
 # 6. Re-source shell so nvm/path are picked up
-exec bash -l
+exec zsh -l

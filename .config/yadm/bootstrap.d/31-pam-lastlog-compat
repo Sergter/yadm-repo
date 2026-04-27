@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TARGET=/etc/pam.d/login
+
+pam_lastlog_available() {
+  local module
+  shopt -s nullglob
+  for module in \
+    /usr/lib/security/pam_lastlog.so \
+    /usr/lib/*/security/pam_lastlog.so \
+    /lib/security/pam_lastlog.so \
+    /lib/*/security/pam_lastlog.so; do
+    [[ -e "$module" ]] && return 0
+  done
+  return 1
+}
+
+if [[ -f "$TARGET" ]] && ! pam_lastlog_available \
+  && grep -qE '^[[:space:]]*session[[:space:]]+optional[[:space:]]+pam_lastlog\.so([[:space:]]|$)' "$TARGET"; then
+  TMP="$(mktemp)"
+  trap 'rm -f "$TMP"' EXIT
+
+  # Always back up before mutating a PAM file - a broken PAM locks you out.
+  sudo cp "$TARGET" "$TARGET.bak.$(date +%s)"
+  awk '
+    /^[[:space:]]*session[[:space:]]+optional[[:space:]]+pam_lastlog\.so([[:space:]]|$)/ {
+      print "#" $0 " # disabled by yadm bootstrap: pam_lastlog.so is not installed"
+      next
+    }
+
+    { print }
+  ' "$TARGET" >"$TMP"
+  sudo install -m 0644 "$TMP" "$TARGET"
+fi
