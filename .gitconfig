@@ -5,7 +5,15 @@
 	azureAuthority = https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47
 	username = seterlet@microsoft.com
 [pull]
-	rebase = true
+    rebase = true
+    ff = only
+[rebase]
+    autoStash = true
+    updateRefs = true
+[fetch]
+    prune = true
+[merge]
+    conflictStyle = zdiff3
 [credential]
 	helper = 
 	helper = /usr/local/bin/git-credential-manager
